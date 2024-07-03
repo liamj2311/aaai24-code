@@ -17,3 +17,4 @@ threadpoolctl
 XlsxWriter 
 wget
 requests
+matplotlib
