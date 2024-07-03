@@ -105,9 +105,9 @@ def mld(vals):
     avg = np.mean(vals)
     for val in vals:
         if val == 0.0:
-            sum += 0.01
+            sum += 0
         else:
-            sum += np.log(val/avg)
+            sum += np.log(avg/val)
     return sum/len(vals)
 
 def expected_value(probs, labels):
@@ -118,7 +118,7 @@ def compute_moment(moment: str, probs, labels):
         return expected_value(probs=probs, labels=labels)
     
 def iop(df: pd.DataFrame, sensitive_attr: str, labels = [0, 1], moment="mean", ineq_index="mld"):
-    sensitive_vals = np.unique(df[sensitive_attr].values)
+    sensitive_vals = np.unique(df[sensitive_attr].values[~np.isnan(df[sensitive_attr].values)])
     moments = []
     for val in sensitive_vals:
         probs = []
@@ -135,9 +135,10 @@ def binarise_predictions(preds: pd.Series, percentile_range: str):
     if percentile_range == "below-25": 
         return pd.Series((percentiles <= 1).astype(int))
     elif percentile_range == "above-75":
-        return pd.Series((percentiles >= 3).astype(int))
+        return pd.Series((percentiles > 3).astype(int))
     elif percentile_range == "between-25-75":
-        return pd.Series((percentiles == 2) | (percentiles == 3)).astype(int)
+        res = pd.Series((percentiles > 1) & (percentiles < 4)).astype(int)
+        return res
     
 def print_iop(iop_val, percentile_range, sensitive_attr):
     pr_verbose = {
