@@ -110,6 +110,19 @@ def mld(vals):
             sum += np.log(avg/val)
     return sum/len(vals)
 
+def gini(vals):
+    sorted_vals = sorted(vals, reverse=False)
+    # values cannot be 0
+    sorted_vals = [x + 0.0000001 for x in sorted_vals]
+    # multiply by 100 each probability to have numerical stability
+    # with values between 0 and 1 and n > 2 negative values were being produced
+    sorted_vals = [x * 100 for x in sorted_vals]
+    den = len(sorted_vals) * sum(sorted_vals)
+    num = 0
+    for i, v in enumerate(sorted_vals):
+        num += (2*(i+1) - len(sorted_vals) - 1) * v
+    return num/den
+
 def expected_value(probs, labels):
     return np.sum(np.dot(np.array(probs), np.array(labels))) / len(probs)
 
@@ -127,6 +140,8 @@ def iop(df: pd.DataFrame, sensitive_attr: str, labels = [0, 1], moment="mean", i
         moments.append(compute_moment(moment=moment, probs=probs, labels=labels))
     if ineq_index == "mld":
         return mld(moments)
+    elif ineq_index == "gini":
+        return gini(moments)
     else:
         return None
     
