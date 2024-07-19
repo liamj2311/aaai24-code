@@ -111,6 +111,8 @@ def mld(vals):
     return sum/len(vals)
 
 def gini(vals):
+    # this function is based on the third equation in
+    # https://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
     sorted_vals = sorted(vals, reverse=False)
     # values cannot be 0
     sorted_vals = [x + 0.0000001 for x in sorted_vals]
