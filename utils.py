@@ -134,12 +134,14 @@ def compute_moment(moment: str, probs, labels):
     
 def iop(df: pd.DataFrame, sensitive_attr: str, labels = [0, 1], moment="mean", ineq_index="mld"):
     sensitive_vals = np.unique(df[sensitive_attr].values[~np.isnan(df[sensitive_attr].values)])
+    val_to_count = {val: df.loc[df[sensitive_attr] == val].shape[0] for val in sensitive_vals}
     moments = []
     for val in sensitive_vals:
         probs = []
         for label in labels:
             probs.append(df.loc[(df[sensitive_attr] == val) & (df["label"] == label)].shape[0] / df.shape[0])
-        moments.append(compute_moment(moment=moment, probs=probs, labels=labels))
+        w = val_to_count[val] / df.shape[0]
+        moments.append(w * compute_moment(moment=moment, probs=probs, labels=labels))
     if ineq_index == "mld":
         return mld(moments)
     elif ineq_index == "gini":
