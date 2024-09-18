@@ -8,14 +8,14 @@ def compute_recall(data, categories, top_level):
     for category in categories:
         recall_results = {}
         for i in [1, 4]:
-            condition_top = (data['scores_MATq'] == i) & (data[category] == top_level)
-            condition_low = (data['scores_MATq'] == i) & (data[category] != top_level)
-            scores_MATq_top = data.loc[condition_top, 'scores_MATq']
-            scores_MATq_low = data.loc[condition_low, 'scores_MATq']
+            condition_top = (data['score_MATq'] == i) & (data[category] == top_level)
+            condition_low = (data['score_MATq'] == i) & (data[category] != top_level)
+            scores_MATq_top = data.loc[condition_top, 'score_MATq']
+            scores_MATq_low = data.loc[condition_low, 'score_MATq']
 
             for variable in ["pred1", "pred2", "pred3", "pred_C", "pred_X"]:
-                scores_MAT_variable_top = data.loc[condition_top, f'scores_MAT_{variable}']
-                scores_MAT_variable_low = data.loc[condition_low, f'scores_MAT_{variable}']
+                scores_MAT_variable_top = data.loc[condition_top, f'score_MAT_{variable}']
+                scores_MAT_variable_low = data.loc[condition_low, f'score_MAT_{variable}']
 
                 recall_top = recall_score(scores_MATq_top, scores_MAT_variable_top, average='micro')
                 recall_low = recall_score(scores_MATq_low, scores_MAT_variable_low, average='micro')
@@ -37,14 +37,14 @@ def compute_recall_terciles(data, categories, top_level):
     for category in categories:
         recall_results = {}
         i = 2
-        condition_top = (data['scores_MATq'] == i) & (data[category] == top_level)
-        condition_low = (data['scores_MATq'] == i) & (data[category] != top_level)
-        scores_MATq_top = data.loc[condition_top, 'scores_MATq']
-        scores_MATq_low = data.loc[condition_low, 'scores_MATq']
+        condition_top = (data['score_MATq'] == i) & (data[category] == top_level)
+        condition_low = (data['score_MATq'] == i) & (data[category] != top_level)
+        scores_MATq_top = data.loc[condition_top, 'score_MATq']
+        scores_MATq_low = data.loc[condition_low, 'score_MATq']
 
         for variable in ["pred1_t", "pred2_t", "pred3_t", "pred_C_t", "pred_X_t"]:
-            scores_MAT_variable_top = data.loc[condition_top, f'scores_MAT_{variable}']
-            scores_MAT_variable_low = data.loc[condition_low, f'scores_MAT_{variable}']
+            scores_MAT_variable_top = data.loc[condition_top, f'score_MAT_{variable}']
+            scores_MAT_variable_low = data.loc[condition_low, f'score_MAT_{variable}']
 
             recall_top = recall_score(scores_MATq_top, scores_MAT_variable_top, average='micro')
             recall_low = recall_score(scores_MATq_low, scores_MAT_variable_low, average='micro')
@@ -67,16 +67,16 @@ def compute_recall_median(data, categories, top_level):
     for category in categories:
         recall_results = {}
         for pair in score_pairs:
-            condition_top = ((data['scores_MATq'] == pair[0]) | (data['scores_MATq'] == pair[1])) & (data[category] == top_level)
-            condition_low = ((data['scores_MATq'] == pair[0]) | (data['scores_MATq'] == pair[1])) & (data[category] != top_level)
-            scores_MATq_top = data.loc[condition_top, 'scores_MATq']
-            scores_MATq_low = data.loc[condition_low, 'scores_MATq']
+            condition_top = ((data['score_MATq'] == pair[0]) | (data['score_MATq'] == pair[1])) & (data[category] == top_level)
+            condition_low = ((data['score_MATq'] == pair[0]) | (data['score_MATq'] == pair[1])) & (data[category] != top_level)
+            scores_MATq_top = data.loc[condition_top, 'score_MATq']
+            scores_MATq_low = data.loc[condition_low, 'score_MATq']
             scores_MATq_top_binary = scores_MATq_top.apply(lambda x: 1 if x in pair else 0)
             scores_MATq_low_binary = scores_MATq_low.apply(lambda x: 1 if x in pair else 0)
 
             for variable in ["pred1", "pred2", "pred3", "pred_C", "pred_X"]:
-                scores_MAT_variable_top = data.loc[condition_top, f'scores_MAT_{variable}']
-                scores_MAT_variable_low = data.loc[condition_low, f'scores_MAT_{variable}']
+                scores_MAT_variable_top = data.loc[condition_top, f'score_MAT_{variable}']
+                scores_MAT_variable_low = data.loc[condition_low, f'score_MAT_{variable}']
                 scores_MAT_variable_top_binary = scores_MAT_variable_top.apply(lambda x: 1 if x in pair else 0)
                 scores_MAT_variable_low_binary = scores_MAT_variable_low.apply(lambda x: 1 if x in pair else 0)
                 
